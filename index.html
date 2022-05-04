@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Developing Data Products Week 4 Assignment</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Developing Data Products Week 4 Assignment">
+  <meta name="author" content="Ariel Gershman">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  
+  <hgroup class="auto-fadein">
+    <h1>Developing Data Products Week 4 Assignment</h1>
+    <h2>05/04/22</h2>
+    <p>Ariel Gershman<br/></p>
+  </hgroup>
+  
+  <article></article>  
+  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  
+  <hgroup>
+    <h2>Coursera Peer Graded Assignment Reproducible Pitch</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <h3>You can find the details of the assignment from the web adress:</h3>
+
+<p>-<a href="https://www.coursera.org/learn/data-products/peer/tMYrn/course-project-shiny-application-and-reproducible-pitch">https://www.coursera.org/learn/data-products/peer/tMYrn/course-project-shiny-application-and-reproducible-pitch</a></p>
+
+<p>-In this assignment, I prepared a shiny application and the link is :
+<a href="https://gmoneyomics.shinyapps.io/Developing-Data-Products/">https://gmoneyomics.shinyapps.io/Developing-Data-Products/</a></p>
+
+<p>-Also, the codes of server.R and ui.R are on the link: <a href="https://github.com/gmoneyomics/Developing-Data-Products-Week-4-Assignment">https://github.com/gmoneyomics/Developing-Data-Products-Week-4-Assignment</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  
+  <hgroup>
+    <h2>Data used for the Shiny Application</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <h3>The data used for the app is the USArrests datasets:</h3>
+
+<pre><code class="r">head(USArrests)
+</code></pre>
+
+<pre><code>##            Murder Assault UrbanPop Rape
+## Alabama      13.2     236       58 21.2
+## Alaska       10.0     263       48 44.5
+## Arizona       8.1     294       80 31.0
+## Arkansas      8.8     190       50 19.5
+## California    9.0     276       91 40.6
+## Colorado      7.9     204       78 38.7
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  
+  <hgroup>
+    <h2>UI Code</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <pre><code class="r">library(shiny)
+# Define UI for app that draws a plot 
+ui &lt;- fluidPage(
+
+  # App title ----
+  titlePanel(&quot;Which crimes are more correlated with murder rates in the US?&quot;),
+
+  # Sidebar layout with input and output definitions
+  sidebarLayout(
+
+    # Sidebar panel for inputs 
+    sidebarPanel(
+
+    selectInput(
+      inputId = &quot;picked&quot;,
+      label = &quot;Crime:&quot;,
+      choices = c(&quot;Assault&quot;, &quot;Rape&quot;),
+      selected = &quot;Assault&quot;,
+      multiple = FALSE)
+    ),
+
+    # Main panel for displaying outputs
+    mainPanel(
+      plotOutput(outputId = &quot;distPlot&quot;)
+
+    )
+  )
+)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  
+  <hgroup>
+    <h2>Server Code</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <pre><code class="r">library(ggpmisc)
+
+server &lt;- function(input, output) {
+
+  output$distPlot &lt;- renderPlot({
+    req(input$picked)
+    ggplot(USArrests, aes(x=Murder, y=.data[[input$picked]]))+geom_point()+stat_smooth(method=&quot;lm&quot;)+
+      stat_poly_eq(formula =  y ~ x, 
+                   aes(label = paste(..eq.label.., ..rr.label.., sep = &quot;~~~&quot;)), 
+                   parse = T)  
+
+
+  })
+
+}
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Coursera Peer Graded Assignment Reproducible Pitch'>
+         1
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Data used for the Shiny Application'>
+         2
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='UI Code'>
+         3
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Server Code'>
+         4
+      </a>
+    </li>
+    
+    </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
