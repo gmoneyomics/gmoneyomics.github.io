@@ -1,97 +1,28 @@
 ---
-title       : Developing Data Products Week 4 Assignment
-subtitle    : 05/04/22
-author      : Ariel Gershman
-job         : 
-framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
-highlighter : highlight.js  # {highlight.js, prettify, highlight}
-hitheme     : tomorrow      # 
-widgets     : []            # {mathjax, quiz, bootstrap}
-mode        : selfcontained # {standalone, draft}
-knit        : slidify::knit2slides
+title: "Data Science Capstone Project"
+author: "Ariel Gershman"
+date: "5/17/2022"
+output: slidy_presentation
 ---
-
-
-## Coursera Peer Graded Assignment Reproducible Pitch
-
-### You can find the details of the assignment from the web adress:
-
--https://www.coursera.org/learn/data-products/peer/tMYrn/course-project-shiny-application-and-reproducible-pitch
-
--In this assignment, I prepared a shiny application and the link is :
-https://gmoneyomics.shinyapps.io/Developing-Data-Products/
-
--Also, the codes of server.R and ui.R are on the link: https://github.com/gmoneyomics/Developing-Data-Products-Week-4-Assignment
-
---- 
-
-## Data used for the Shiny Application
-
-### The data used for the app is the USArrests datasets:
-
-```{r} 
-head(USArrests)
-```
-
----
-
-## UI Code
-
-```r
-library(shiny)
-# Define UI for app that draws a plot 
-ui <- fluidPage(
-  
-  # App title ----
-  titlePanel("Which crimes are more correlated with murder rates in the US?"),
-  
-  # Sidebar layout with input and output definitions
-  sidebarLayout(
-    
-    # Sidebar panel for inputs 
-    sidebarPanel(
-      
-    selectInput(
-      inputId = "picked",
-      label = "Crime:",
-      choices = c("Assault", "Rape"),
-      selected = "Assault",
-      multiple = FALSE)
-    ),
-    
-    # Main panel for displaying outputs
-    mainPanel(
-      plotOutput(outputId = "distPlot")
-      
-    )
-  )
-)
-```
-
----
-
-## Server Code
-
-```r
-library(ggpmisc)
-
-server <- function(input, output) {
-
-  output$distPlot <- renderPlot({
-    req(input$picked)
-    ggplot(USArrests, aes(x=Murder, y=.data[[input$picked]]))+geom_point()+stat_smooth(method="lm")+
-      stat_poly_eq(formula =  y ~ x, 
-                   aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
-                   parse = T)  
-    
-    
-  })
-  
-}
-```
+# Introduction
+- The goal of this exercise is to create a product to highlight the prediction algorithm that you have built and to provide an interface that can be accessed by others. 
+- The premise is to build an app that takes as input a phrase (multiple words) in a text box input and outputs a prediction of the next word.
 
 
 
+# The Algorithm
+- The predictive text model was built from a sample of 30% of the lines extracted from the large corpus of blogs, news and twitter data.
 
+- The sample data was then tokenized and cleaned using the `tm` package and cleaned. Cleaning included converting to lowercase, strip white space, and removing punctuation and numbers. The data was then split into tokens (n-grams).
 
+- As text is entered by the user, the algorithm iterates from longest n-gram (4-gram) to shortest (2-gram) to detect a match. The predicted next word is considered using the longest, most frequent matching n-gram. 
 
+# Use Instructions
+- The app can be found here: https://gmoneyomics.shinyapps.io/Capstone_shiny/
+- The user enters a phrase into the text box and clicks the submit button
+- Next, the app will print the next word in the phrase and also list if it was found using a 2-gram, 3-gram or 4-gram
+
+# Drawbacks of the model
+
+- The model is highly dependent on the training data and due to computational load of model training the training set needed to be downsampled.
+- Increasing the amount of training data would increase the accuracy of the app.
